@@ -10,4 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
-[Unreleased]: https://github.com/goph/emperror/compare/HEAD...HEAD
+## 0.1.0 - 2018-06-11
+
+- Initial release
+
+[Unreleased]: https://github.com/goph/emperror/compare/v0.1.0...HEAD
