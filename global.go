@@ -40,7 +40,7 @@ func Parse() {
 		environment[e[0]] = e[1]
 	}
 
-	Global.Parse(os.Args[1:], environment)
+	Global.Parse(os.Args[1:], environment) // nolint:errcheck
 }
 
 // Parsed reports whether Parse has been called.
