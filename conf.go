@@ -2,7 +2,9 @@
 package conf
 
 import (
+	"fmt"
 	"io"
+	"os"
 
 	"github.com/goph/env"
 	flag "github.com/spf13/pflag"
@@ -27,22 +29,29 @@ type Configurator struct {
 	envVarSet *env.EnvVarSet // use env() accessor
 	flagSet   *flag.FlagSet  // use flag() accessor
 
+	name          string
 	errorHandling ErrorHandling
+	output        io.Writer // nil means stderr; use out() accessor
 }
 
 // NewConfigurator returns a new configurator instance.
 func NewConfigurator(name string, errorHandling ErrorHandling) *Configurator {
-	return &Configurator{
-		envVarSet: env.NewEnvVarSet(env.ErrorHandling(errorHandling)),
-		flagSet:   flag.NewFlagSet(name, flag.ErrorHandling(errorHandling)),
+	flagSet := flag.NewFlagSet(name, flag.ContinueOnError)
 
+	flagSet.Usage = func() {}
+
+	return &Configurator{
+		envVarSet: env.NewEnvVarSet(env.ContinueOnError),
+		flagSet:   flagSet,
+
+		name:          name,
 		errorHandling: errorHandling,
 	}
 }
 
 func (c *Configurator) env() *env.EnvVarSet {
 	if c.envVarSet == nil {
-		c.envVarSet = env.NewEnvVarSet(env.ErrorHandling(c.errorHandling))
+		c.envVarSet = env.NewEnvVarSet(env.ContinueOnError)
 	}
 
 	return c.envVarSet
@@ -50,7 +59,9 @@ func (c *Configurator) env() *env.EnvVarSet {
 
 func (c *Configurator) flag() *flag.FlagSet {
 	if c.flagSet == nil {
-		c.flagSet = flag.NewFlagSet("", flag.ErrorHandling(c.errorHandling))
+		c.flagSet = flag.NewFlagSet("", flag.ContinueOnError)
+
+		c.flagSet.Usage = func() {}
 	}
 
 	return c.flagSet
@@ -78,8 +89,18 @@ func (c *Configurator) VarF(value Value, name string, usage string) {
 	c.flag().Var(value, name, usage)
 }
 
+func (c *Configurator) out() io.Writer {
+	if c.output == nil {
+		return os.Stderr
+	}
+
+	return c.output
+}
+
 // SetOutput sets the destination for usage and error messages in the underlying FlagSet and EnvVarSet.
 func (c *Configurator) SetOutput(output io.Writer) {
+	c.output = output
+
 	c.env().SetOutput(output)
 	c.flag().SetOutput(output)
 }
@@ -94,7 +115,11 @@ func (c *Configurator) Parse(arguments []string, environment map[string]string) 
 	}
 
 	err = c.flag().Parse(arguments)
-	if err != nil {
+	if err == flag.ErrHelp {
+		c.PrintUsage()
+
+		return err
+	} else if err != nil {
 		return err
 	}
 
@@ -104,4 +129,10 @@ func (c *Configurator) Parse(arguments []string, environment map[string]string) 
 // Parsed reports whether Parse has been called.
 func (c *Configurator) Parsed() bool {
 	return c.env().Parsed() && c.flag().Parsed()
+}
+
+func (c *Configurator) PrintUsage() {
+	fmt.Fprintf(c.out(), "Usage of %s:\n\n", c.name)
+	fmt.Fprintf(c.out(), "FLAGS\n\n%s\n\n", c.flag().FlagUsages())
+	fmt.Fprintf(c.out(), "ENVIRONMENT VARIABLES\n\n%s", c.env().EnvVarUsages())
 }
