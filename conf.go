@@ -111,16 +111,32 @@ func (c *Configurator) SetOutput(output io.Writer) {
 func (c *Configurator) Parse(arguments []string, environment map[string]string) error {
 	err := c.env().Parse(environment)
 	if err != nil {
-		return err
+		switch c.errorHandling {
+		case ContinueOnError:
+			return err
+		case ExitOnError:
+			fmt.Fprintln(c.out(), err)
+			os.Exit(2)
+		case PanicOnError:
+			panic(err)
+		}
 	}
 
 	err = c.flag().Parse(arguments)
 	if err == flag.ErrHelp {
 		c.PrintUsage()
+	}
 
-		return err
-	} else if err != nil {
-		return err
+	if err != nil {
+		switch c.errorHandling {
+		case ContinueOnError:
+			return err
+		case ExitOnError:
+			fmt.Fprintln(c.out(), err)
+			os.Exit(2)
+		case PanicOnError:
+			panic(err)
+		}
 	}
 
 	return nil
