@@ -1,6 +1,6 @@
 # Conf - CLI configuration management
 
-[![Build Status](https://img.shields.io/travis/goph/conf.svg?style=flat-square)](https://travis-ci.org/goph/conf)
+[![Build Status](https://travis-ci.com/goph/conf.svg?branch=master)](https://travis-ci.com/goph/conf)
 [![Go Report Card](https://goreportcard.com/badge/github.com/goph/conf?style=flat-square)](https://goreportcard.com/report/github.com/goph/conf)
 [![GolangCI](https://golangci.com/badges/github.com/goph/conf.svg)](https://golangci.com)
 [![GoDoc](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/goph/conf)
