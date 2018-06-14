@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Query string support (builtin `env` package; custom value for `pflag` package)
+
 ### Changed
 
 - Updated `env` package

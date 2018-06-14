@@ -21,6 +21,7 @@ func TestFlagValue(t *testing.T) {
 	vars.int32Var = c.Int32F("int32", 0, "int32 value")
 	vars.int64Var = c.Int64F("int64", 0, "int64 value")
 	vars.int8Var = c.Int8F("int8", 0, "int8 value")
+	vars.queryStringVar = c.QueryStringF("query-string", map[string]string{}, "query string value")
 	vars.stringVar = c.StringF("string", "", "string value")
 	vars.uintVar = c.UintF("uint", 0, "uint value")
 	vars.uint16Var = c.Uint16F("uint16", 0, "uint16 value")
@@ -44,6 +45,7 @@ func TestFlagValueVar(t *testing.T) {
 	c.Int32VarF(vars.int32Var, "int32", 0, "int32 value")
 	c.Int64VarF(vars.int64Var, "int64", 0, "int64 value")
 	c.Int8VarF(vars.int8Var, "int8", 0, "int8 value")
+	c.QueryStringVarF(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	c.StringVarF(vars.stringVar, "string", "", "string value")
 	c.UintVarF(vars.uintVar, "uint", 0, "uint value")
 	c.Uint16VarF(vars.uint16Var, "uint16", 0, "uint16 value")
@@ -67,6 +69,7 @@ func TestGlobalFlagValue(t *testing.T) {
 	vars.int32Var = conf.Int32F("int32", 0, "int32 value")
 	vars.int64Var = conf.Int64F("int64", 0, "int64 value")
 	vars.int8Var = conf.Int8F("int8", 0, "int8 value")
+	vars.queryStringVar = conf.QueryStringF("query-string", map[string]string{}, "query string value")
 	vars.stringVar = conf.StringF("string", "", "string value")
 	vars.uintVar = conf.UintF("uint", 0, "uint value")
 	vars.uint16Var = conf.Uint16F("uint16", 0, "uint16 value")
@@ -90,6 +93,7 @@ func TestGlobalFlagValueVar(t *testing.T) {
 	conf.Int32VarF(vars.int32Var, "int32", 0, "int32 value")
 	conf.Int64VarF(vars.int64Var, "int64", 0, "int64 value")
 	conf.Int8VarF(vars.int8Var, "int8", 0, "int8 value")
+	conf.QueryStringVarF(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	conf.StringVarF(vars.stringVar, "string", "", "string value")
 	conf.UintVarF(vars.uintVar, "uint", 0, "uint value")
 	conf.Uint16VarF(vars.uint16Var, "uint16", 0, "uint16 value")
@@ -112,6 +116,7 @@ func testFlagValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 		"--int32", "32",
 		"--int64", "64",
 		"--int8", "8",
+		"--query-string", "key=value&key2=value2",
 		"--string", "string",
 		"--uint", "22",
 		"--uint16", "16",
@@ -162,6 +167,10 @@ func testFlagValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 
 	if *vars.int8Var != 8 {
 		t.Error("int8 var should be `8`, got: ", *vars.int8Var)
+	}
+
+	if (*vars.queryStringVar)["key"] != "value" || (*vars.queryStringVar)["key2"] != "value2" {
+		t.Error("query string var should be `key=value&key2=value2`, got: ", *vars.queryStringVar)
 	}
 
 	if *vars.stringVar != "string" {

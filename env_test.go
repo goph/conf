@@ -21,6 +21,7 @@ func TestEnvValue(t *testing.T) {
 	vars.int32Var = c.Int32E("int32", 0, "int32 value")
 	vars.int64Var = c.Int64E("int64", 0, "int64 value")
 	vars.int8Var = c.Int8E("int8", 0, "int8 value")
+	vars.queryStringVar = c.QueryStringE("query-string", map[string]string{}, "query string value")
 	vars.stringVar = c.StringE("string", "", "string value")
 	vars.uintVar = c.UintE("uint", 0, "uint value")
 	vars.uint16Var = c.Uint16E("uint16", 0, "uint16 value")
@@ -44,6 +45,7 @@ func TestEnvValueVar(t *testing.T) {
 	c.Int32VarE(vars.int32Var, "int32", 0, "int32 value")
 	c.Int64VarE(vars.int64Var, "int64", 0, "int64 value")
 	c.Int8VarE(vars.int8Var, "int8", 0, "int8 value")
+	c.QueryStringVarE(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	c.StringVarE(vars.stringVar, "string", "", "string value")
 	c.UintVarE(vars.uintVar, "uint", 0, "uint value")
 	c.Uint16VarE(vars.uint16Var, "uint16", 0, "uint16 value")
@@ -67,6 +69,7 @@ func TestGlobalEnvValue(t *testing.T) {
 	vars.int32Var = conf.Int32E("int32", 0, "int32 value")
 	vars.int64Var = conf.Int64E("int64", 0, "int64 value")
 	vars.int8Var = conf.Int8E("int8", 0, "int8 value")
+	vars.queryStringVar = conf.QueryStringE("query-string", map[string]string{}, "query string value")
 	vars.stringVar = conf.StringE("string", "", "string value")
 	vars.uintVar = conf.UintE("uint", 0, "uint value")
 	vars.uint16Var = conf.Uint16E("uint16", 0, "uint16 value")
@@ -90,6 +93,7 @@ func TestGlobalEnvValueVar(t *testing.T) {
 	conf.Int32VarE(vars.int32Var, "int32", 0, "int32 value")
 	conf.Int64VarE(vars.int64Var, "int64", 0, "int64 value")
 	conf.Int8VarE(vars.int8Var, "int8", 0, "int8 value")
+	conf.QueryStringVarE(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	conf.StringVarE(vars.stringVar, "string", "", "string value")
 	conf.UintVarE(vars.uintVar, "uint", 0, "uint value")
 	conf.Uint16VarE(vars.uint16Var, "uint16", 0, "uint16 value")
@@ -104,21 +108,22 @@ func testEnvValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 	arguments := []string{}
 
 	environment := map[string]string{
-		"BOOL":     "true",
-		"DURATION": "1s",
-		"FLOAT32":  "172e12",
-		"FLOAT64":  "2718e28",
-		"INT":      "22",
-		"INT16":    "16",
-		"INT32":    "32",
-		"INT64":    "64",
-		"INT8":     "8",
-		"STRING":   "string",
-		"UINT":     "22",
-		"UINT16":   "16",
-		"UINT32":   "32",
-		"UINT64":   "64",
-		"UINT8":    "8",
+		"BOOL":         "true",
+		"DURATION":     "1s",
+		"FLOAT32":      "172e12",
+		"FLOAT64":      "2718e28",
+		"INT":          "22",
+		"INT16":        "16",
+		"INT32":        "32",
+		"INT64":        "64",
+		"INT8":         "8",
+		"QUERY_STRING": "key=value&key2=value2",
+		"STRING":       "string",
+		"UINT":         "22",
+		"UINT16":       "16",
+		"UINT32":       "32",
+		"UINT64":       "64",
+		"UINT8":        "8",
 	}
 
 	err := c.Parse(arguments, environment)
@@ -161,6 +166,10 @@ func testEnvValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 
 	if *vars.int8Var != 8 {
 		t.Error("int8 var should be `8`, got: ", *vars.int8Var)
+	}
+
+	if (*vars.queryStringVar)["key"] != "value" || (*vars.queryStringVar)["key2"] != "value2" {
+		t.Error("query string var should be `key=value&key2=value2`, got: ", *vars.queryStringVar)
 	}
 
 	if *vars.stringVar != "string" {
