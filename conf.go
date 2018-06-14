@@ -124,7 +124,15 @@ func (c *Configurator) Parse(arguments []string, environment map[string]string) 
 
 	err = c.flag().Parse(arguments)
 	if err == flag.ErrHelp {
-		c.PrintUsage()
+		c.usage()
+
+		switch c.errorHandling {
+		case ContinueOnError:
+			return err
+		case ExitOnError, PanicOnError:
+			// Exit here without outputting the error
+			os.Exit(2)
+		}
 	}
 
 	if err != nil {
@@ -147,7 +155,7 @@ func (c *Configurator) Parsed() bool {
 	return c.env().Parsed() && c.flag().Parsed()
 }
 
-func (c *Configurator) PrintUsage() {
+func (c *Configurator) usage() {
 	fmt.Fprintf(c.out(), "Usage of %s:\n\n", c.name)
 	fmt.Fprintf(c.out(), "FLAGS\n\n%s\n\n", c.flag().FlagUsages())
 	fmt.Fprintf(c.out(), "ENVIRONMENT VARIABLES\n\n%s", c.env().EnvVarUsages())

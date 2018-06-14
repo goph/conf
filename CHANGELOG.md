@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Updated `env` package
+- Do not output error when showing help
+
+### Removed
+
+- `PrintUsage` method (refactor later)
 
 
 ## [0.2.1] - 2018-06-14
