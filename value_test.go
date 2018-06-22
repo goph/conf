@@ -14,6 +14,7 @@ type valueVars struct {
 	int8Var        *int8
 	queryStringVar *map[string]string
 	stringVar      *string
+	stringSliceVar *[]string
 	uintVar        *uint
 	uint16Var      *uint16
 	uint32Var      *uint32
@@ -34,6 +35,7 @@ func newValueVars() *valueVars {
 		int8Var:        new(int8),
 		queryStringVar: new(map[string]string),
 		stringVar:      new(string),
+		stringSliceVar: new([]string),
 		uintVar:        new(uint),
 		uint16Var:      new(uint16),
 		uint32Var:      new(uint32),

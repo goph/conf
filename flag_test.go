@@ -23,6 +23,7 @@ func TestFlagValue(t *testing.T) {
 	vars.int8Var = c.Int8F("int8", 0, "int8 value")
 	vars.queryStringVar = c.QueryStringF("query-string", map[string]string{}, "query string value")
 	vars.stringVar = c.StringF("string", "", "string value")
+	vars.stringSliceVar = c.StringSliceF("string-slice", []string{}, "string slice value")
 	vars.uintVar = c.UintF("uint", 0, "uint value")
 	vars.uint16Var = c.Uint16F("uint16", 0, "uint16 value")
 	vars.uint32Var = c.Uint32F("uint32", 0, "uint32 value")
@@ -47,6 +48,7 @@ func TestFlagValueVar(t *testing.T) {
 	c.Int8VarF(vars.int8Var, "int8", 0, "int8 value")
 	c.QueryStringVarF(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	c.StringVarF(vars.stringVar, "string", "", "string value")
+	c.StringSliceVarF(vars.stringSliceVar, "string-slice", []string{}, "string slice value")
 	c.UintVarF(vars.uintVar, "uint", 0, "uint value")
 	c.Uint16VarF(vars.uint16Var, "uint16", 0, "uint16 value")
 	c.Uint32VarF(vars.uint32Var, "uint32", 0, "uint32 value")
@@ -71,6 +73,7 @@ func TestGlobalFlagValue(t *testing.T) {
 	vars.int8Var = conf.Int8F("int8", 0, "int8 value")
 	vars.queryStringVar = conf.QueryStringF("query-string", map[string]string{}, "query string value")
 	vars.stringVar = conf.StringF("string", "", "string value")
+	vars.stringSliceVar = conf.StringSliceF("string-slice", []string{}, "string slice value")
 	vars.uintVar = conf.UintF("uint", 0, "uint value")
 	vars.uint16Var = conf.Uint16F("uint16", 0, "uint16 value")
 	vars.uint32Var = conf.Uint32F("uint32", 0, "uint32 value")
@@ -95,6 +98,7 @@ func TestGlobalFlagValueVar(t *testing.T) {
 	conf.Int8VarF(vars.int8Var, "int8", 0, "int8 value")
 	conf.QueryStringVarF(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	conf.StringVarF(vars.stringVar, "string", "", "string value")
+	conf.StringSliceVarF(vars.stringSliceVar, "string-slice", []string{}, "string slice value")
 	conf.UintVarF(vars.uintVar, "uint", 0, "uint value")
 	conf.Uint16VarF(vars.uint16Var, "uint16", 0, "uint16 value")
 	conf.Uint32VarF(vars.uint32Var, "uint32", 0, "uint32 value")
@@ -118,6 +122,7 @@ func testFlagValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 		"--int8", "8",
 		"--query-string", "key=value&key2=value2",
 		"--string", "string",
+		"--string-slice", "one,two,three", "--string-slice", "four",
 		"--uint", "22",
 		"--uint16", "16",
 		"--uint32", "32",
@@ -175,6 +180,12 @@ func testFlagValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 
 	if *vars.stringVar != "string" {
 		t.Error("string var should be `string`, got: ", *vars.stringVar)
+	}
+
+	for key, value := range []string{"one", "two", "three", "four"} {
+		if (*vars.stringSliceVar)[key] != value {
+			t.Errorf("string slice var[%d] should be %s, got: %s", key, value, (*vars.stringSliceVar)[key])
+		}
 	}
 
 	if *vars.uintVar != 22 {
