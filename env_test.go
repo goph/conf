@@ -23,6 +23,7 @@ func TestEnvValue(t *testing.T) {
 	vars.int8Var = c.Int8E("int8", 0, "int8 value")
 	vars.queryStringVar = c.QueryStringE("query-string", map[string]string{}, "query string value")
 	vars.stringVar = c.StringE("string", "", "string value")
+	vars.stringSliceVar = c.StringSliceE("string-slice", []string{}, "string slice value")
 	vars.uintVar = c.UintE("uint", 0, "uint value")
 	vars.uint16Var = c.Uint16E("uint16", 0, "uint16 value")
 	vars.uint32Var = c.Uint32E("uint32", 0, "uint32 value")
@@ -47,6 +48,7 @@ func TestEnvValueVar(t *testing.T) {
 	c.Int8VarE(vars.int8Var, "int8", 0, "int8 value")
 	c.QueryStringVarE(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	c.StringVarE(vars.stringVar, "string", "", "string value")
+	c.StringSliceVarE(vars.stringSliceVar, "string-slice", []string{}, "string slice value")
 	c.UintVarE(vars.uintVar, "uint", 0, "uint value")
 	c.Uint16VarE(vars.uint16Var, "uint16", 0, "uint16 value")
 	c.Uint32VarE(vars.uint32Var, "uint32", 0, "uint32 value")
@@ -71,6 +73,7 @@ func TestGlobalEnvValue(t *testing.T) {
 	vars.int8Var = conf.Int8E("int8", 0, "int8 value")
 	vars.queryStringVar = conf.QueryStringE("query-string", map[string]string{}, "query string value")
 	vars.stringVar = conf.StringE("string", "", "string value")
+	vars.stringSliceVar = conf.StringSliceE("string-slice", []string{}, "string slice value")
 	vars.uintVar = conf.UintE("uint", 0, "uint value")
 	vars.uint16Var = conf.Uint16E("uint16", 0, "uint16 value")
 	vars.uint32Var = conf.Uint32E("uint32", 0, "uint32 value")
@@ -95,6 +98,7 @@ func TestGlobalEnvValueVar(t *testing.T) {
 	conf.Int8VarE(vars.int8Var, "int8", 0, "int8 value")
 	conf.QueryStringVarE(vars.queryStringVar, "query-string", map[string]string{}, "query string value")
 	conf.StringVarE(vars.stringVar, "string", "", "string value")
+	conf.StringSliceVarE(vars.stringSliceVar, "string-slice", []string{}, "string slice value")
 	conf.UintVarE(vars.uintVar, "uint", 0, "uint value")
 	conf.Uint16VarE(vars.uint16Var, "uint16", 0, "uint16 value")
 	conf.Uint32VarE(vars.uint32Var, "uint32", 0, "uint32 value")
@@ -119,6 +123,7 @@ func testEnvValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 		"INT8":         "8",
 		"QUERY_STRING": "key=value&key2=value2",
 		"STRING":       "string",
+		"STRING_SLICE": "one,two,three,four",
 		"UINT":         "22",
 		"UINT16":       "16",
 		"UINT32":       "32",
@@ -174,6 +179,12 @@ func testEnvValue(t *testing.T, c *conf.Configurator, vars *valueVars) {
 
 	if *vars.stringVar != "string" {
 		t.Error("string var should be `string`, got: ", *vars.stringVar)
+	}
+
+	for key, value := range []string{"one", "two", "three", "four"} {
+		if (*vars.stringSliceVar)[key] != value {
+			t.Errorf("string slice var[%d] should be %s, got: %s", key, value, (*vars.stringSliceVar)[key])
+		}
 	}
 
 	if *vars.uintVar != 22 {
