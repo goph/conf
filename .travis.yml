@@ -18,8 +18,8 @@ matrix:
     allow_failures:
         - go: tip
 
-before_install: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+before_install: make setup-env
 
-install: dep ensure
+install: make dep
 
-script: go test
+script: make check
