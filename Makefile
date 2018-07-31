@@ -8,7 +8,7 @@ setup:: setup-env dep ## Setup the project for development
 
 .PHONY: dep
 dep: bin/dep ## Install dependencies
-	dep ensure
+	bin/dep ensure
 
 .PHONY: setup-env
 setup-env: bin/dep bin/golangci-lint ## Setup environment
