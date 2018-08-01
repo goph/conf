@@ -177,3 +177,9 @@ func (c *Configurator) usage() {
 func (c *Configurator) Init(name string, errorHandling ErrorHandling) {
 	c.flag().Init(name, flag.ErrorHandling(errorHandling))
 }
+
+// Sort sets the SortVars property of the EnvVarSet and the SortFlags property of the FlagSet.
+func (c *Configurator) Sort(v bool) {
+	c.env().SortVars = v
+	c.flag().SortFlags = v
+}
