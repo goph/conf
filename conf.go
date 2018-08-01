@@ -105,6 +105,16 @@ func (c *Configurator) SetOutput(output io.Writer) {
 	c.flag().SetOutput(output)
 }
 
+// LookupE returns the EnvVar structure of the named environment variable, returning nil if none exists.
+func (c *Configurator) LookupE(name string) *env.EnvVar {
+	return c.env().Lookup(name)
+}
+
+// LookupF returns the Flag structure of the named flag, returning nil if none exists.
+func (c *Configurator) LookupF(name string) *flag.Flag {
+	return c.flag().Lookup(name)
+}
+
 // Parse parses flags and environment variables according to the definitions in the FlagSet and EnvVarSet.
 // Must be called after all variables in the FlagSet and EnvVarSet
 // are defined and before variables are accessed by the program.

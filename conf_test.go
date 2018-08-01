@@ -95,3 +95,45 @@ ENVIRONMENT VARIABLES
 		t.Errorf("expected the usage output: \n%s\n\nactual: \n%s", expected, actual)
 	}
 }
+
+func TestConfigurator_LookupE(t *testing.T) {
+	c := conf.NewConfigurator("name", conf.ContinueOnError)
+
+	v := &valueStub{
+		typ: "valueStub",
+		err: nil,
+	}
+
+	c.VarE(v, "value", "Value usage string")
+
+	envVar := c.LookupE("value")
+
+	if envVar == nil {
+		t.Error("returned value is expected to be an EnVar, got nil")
+	}
+
+	if envVar.Value != v {
+		t.Error("returned EnvVar is expected to be hold value")
+	}
+}
+
+func TestConfigurator_LookupF(t *testing.T) {
+	c := conf.NewConfigurator("name", conf.ContinueOnError)
+
+	v := &valueStub{
+		typ: "valueStub",
+		err: nil,
+	}
+
+	c.VarF(v, "value", "Value usage string")
+
+	flag := c.LookupF("value")
+
+	if flag == nil {
+		t.Error("returned value is expected to be an Flag, got nil")
+	}
+
+	if flag.Value != v {
+		t.Error("returned Flag is expected to be hold value")
+	}
+}
