@@ -170,3 +170,10 @@ func (c *Configurator) usage() {
 	fmt.Fprintf(c.out(), "FLAGS\n\n%s\n\n", c.flag().FlagUsages())
 	fmt.Fprintf(c.out(), "ENVIRONMENT VARIABLES\n\n%s", c.env().EnvVarUsages())
 }
+
+// Init sets the name and error handling property for the configurator.
+// By default, the zero EnvVarSet and FlagSet use an empty name and the
+// ContinueOnError error handling policy.
+func (c *Configurator) Init(name string, errorHandling ErrorHandling) {
+	c.flag().Init(name, flag.ErrorHandling(errorHandling))
+}
